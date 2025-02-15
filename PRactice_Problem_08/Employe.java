@@ -77,7 +77,7 @@ class ContractEmployee extends Employee {
 
     public double calculatePay() {
         System.out.println("Calculating pay for contract employee: " + this.name);
-        return this.contractAmount; // Contract employees receive a fixed contract amount
+        return this.contractAmount;
     }
 }
 
