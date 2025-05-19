@@ -1,19 +1,23 @@
 package game;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 
 public class PlayerCar {
     private double x, y, width, height;
     private final double MOVE_STEP = 10;
     private final double SCREEN_WIDTH = 400;
     private final double SCREEN_HEIGHT = 600;
+    private Image image;
 
     public PlayerCar(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+
+        // Load player car image
+        image = new Image(getClass().getResourceAsStream("/images/playerCar.png"));
     }
 
     public void moveLeft() {
@@ -33,8 +37,7 @@ public class PlayerCar {
     }
 
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
-        gc.fillRect(x, y, width, height);
+        gc.drawImage(image, x, y, width, height);
     }
 
     public boolean collidesWith(EnemyCar enemy) {

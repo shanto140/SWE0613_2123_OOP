@@ -49,6 +49,7 @@ public class LaneCarGame extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         window = primaryStage;
         window.setTitle("Lane Based Car Game");
 
@@ -58,6 +59,7 @@ public class LaneCarGame extends Application {
 
         window.setScene(menuScene);
         window.show();
+
     }
 
     private void createMenuScene() {
@@ -74,10 +76,6 @@ public class LaneCarGame extends Application {
         });
 
         VBox menuLayout = new VBox(30);
-
-
-
-
 
         menuLayout.setStyle("-fx-background-color: black; -fx-alignment: center;");
         playBtn.setStyle("-fx-font-size: 24px; -fx-padding: 10px 20px;");
