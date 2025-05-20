@@ -14,19 +14,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-
-import game.PlayerCar;
-import game.EnemyCar;
+import java.util.*;
 
 public class LaneCarGame extends Application {
 
     private final int WIDTH = 400;
     private final int HEIGHT = 600;
-    private final int LANE_COUNT = 5;
+    private final int LANE_COUNT = 7;
     private final double LANE_WIDTH = WIDTH / (double) LANE_COUNT;
 
     private Scene menuScene, gameScene, gameOverScene;
@@ -43,47 +37,39 @@ public class LaneCarGame extends Application {
     private int score = 0;
     private double enemySpeed = 2;
     private long lastEnemySpawnTime = 0;
-    private final long enemySpawnInterval = 1000000000;
+    private final long enemySpawnInterval = 1_000_000_000;
 
     private AnimationTimer gameLoop;
 
     @Override
     public void start(Stage primaryStage) {
-
         window = primaryStage;
         window.setTitle("Lane Based Car Game");
 
         createMenuScene();
         createGameScene();
-        createGameOverScene();
 
         window.setScene(menuScene);
         window.show();
-
     }
 
     private void createMenuScene() {
         Button playBtn = new Button("Play");
         Button exitBtn = new Button("Exit");
+
         playBtn.setOnAction(e -> {
             resetGame();
             window.setScene(gameScene);
             gameLoop.start();
         });
-        exitBtn.setOnAction(e -> {
-            // Close the application
-            Platform.exit();
-        });
+
+        exitBtn.setOnAction(e -> Platform.exit());
 
         VBox menuLayout = new VBox(30);
-
         menuLayout.setStyle("-fx-background-color: black; -fx-alignment: center;");
         playBtn.setStyle("-fx-font-size: 24px; -fx-padding: 10px 20px;");
         exitBtn.setStyle("-fx-font-size: 24px; -fx-padding: 10px 20px;");
-
-        menuLayout.getChildren().add(playBtn);
-        menuLayout.getChildren().add(exitBtn);
-
+        menuLayout.getChildren().addAll(playBtn, exitBtn);
 
         menuScene = new Scene(menuLayout, WIDTH, HEIGHT);
     }
@@ -126,21 +112,6 @@ public class LaneCarGame extends Application {
         };
     }
 
-    private void createGameOverScene() {
-        Button playAgainBtn = new Button("Play Again");
-        playAgainBtn.setOnAction(e -> {
-            resetGame();
-            window.setScene(gameScene);
-            gameLoop.start();
-        });
-
-        VBox gameOverLayout = new VBox(20);
-        gameOverLayout.setStyle("-fx-background-color: black; -fx-alignment: center;");
-        gameOverLayout.getChildren().addAll(playAgainBtn);
-
-        gameOverScene = new Scene(gameOverLayout, WIDTH, HEIGHT);
-    }
-
     private void resetGame() {
         player.setPosition(WIDTH / 2 - 20, HEIGHT - 80);
         enemies.clear();
@@ -150,11 +121,10 @@ public class LaneCarGame extends Application {
     }
 
     private void update(long now) {
-        if (leftPressed) player.moveLeft();
-        if (rightPressed) player.moveRight();
-        if (upPressed) player.moveUp();
-        if (downPressed) player.moveDown();
-
+        if (leftPressed && player.getX() > 0) player.moveLeft();
+        if (rightPressed && player.getX() + player.getWidth() < WIDTH) player.moveRight();
+        if (upPressed && player.getY() > 0) player.moveUp();
+        if (downPressed && player.getY() + player.getHeight() < HEIGHT) player.moveDown();
 
         if (now - lastEnemySpawnTime > enemySpawnInterval) {
             spawnEnemy();
@@ -187,21 +157,18 @@ public class LaneCarGame extends Application {
     }
 
     private void draw() {
-        gc.setFill(Color.DARKGRAY);
+        gc.setFill(Color.DEEPSKYBLUE);
         gc.fillRect(0, 0, WIDTH, HEIGHT);
 
         gc.setStroke(Color.WHITE);
-        gc.setLineWidth(2);
+        gc.setLineWidth(3);
         for (int i = 1; i < LANE_COUNT; i++) {
             double x = i * LANE_WIDTH;
             gc.strokeLine(x, 0, x, HEIGHT);
         }
 
         player.draw(gc);
-
-        for (EnemyCar enemy : enemies) {
-            enemy.draw(gc);
-        }
+        for (EnemyCar enemy : enemies) enemy.draw(gc);
 
         gc.setFill(Color.WHITE);
         gc.setFont(Font.font(24));
@@ -211,12 +178,15 @@ public class LaneCarGame extends Application {
     private void showGameOver() {
         VBox layout = new VBox(20);
         layout.setStyle("-fx-background-color: black; -fx-alignment: center;");
+
         javafx.scene.text.Text gameOverText = new javafx.scene.text.Text("Game Over");
         gameOverText.setFill(Color.WHITE);
         gameOverText.setFont(Font.font(36));
+
         javafx.scene.text.Text scoreText = new javafx.scene.text.Text("Your Score: " + score);
         scoreText.setFill(Color.WHITE);
         scoreText.setFont(Font.font(24));
+
         Button playAgainBtn = new Button("Play Again");
         playAgainBtn.setOnAction(e -> {
             resetGame();
@@ -225,7 +195,6 @@ public class LaneCarGame extends Application {
         });
 
         layout.getChildren().addAll(gameOverText, scoreText, playAgainBtn);
-
         gameOverScene = new Scene(layout, WIDTH, HEIGHT);
         window.setScene(gameOverScene);
     }
