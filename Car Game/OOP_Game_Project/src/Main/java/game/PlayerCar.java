@@ -10,14 +10,16 @@ public class PlayerCar extends Car {
         super(x, y, width, height, Color.GREEN);
         setImage(new Image(getClass().getResourceAsStream("/images/playerCar.png")));
     }
-
-    public void moveLeft() {
-        x -= STEP;
+    public boolean collidesWith(Car other) {
+        return x < other.x + other.width &&
+                x + width > other.x &&
+                y < other.y + other.height &&
+                y + height > other.y;
     }
 
-    public void moveRight() {
-        x += STEP;
-    }
+    public void moveLeft() { x -= STEP; }
+
+    public void moveRight() { x += STEP; }
 
     public void moveUp() {
         y -= STEP;

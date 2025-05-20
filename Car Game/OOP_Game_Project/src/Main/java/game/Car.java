@@ -28,12 +28,7 @@ public abstract class Car {
         gc.drawImage(image, x, y, width, height);
     }
 
-    public boolean collidesWith(Car other) {
-        return x < other.x + other.width &&
-                x + width > other.x &&
-                y < other.y + other.height &&
-                y + height > other.y;
-    }
+    public abstract boolean collidesWith(Car other);
 
     public void setPosition(double x, double y) {
         this.x = x;
